@@ -17,27 +17,23 @@ type Tab = "overview" | "products" | "batches" | "labels" | "reports" | "records
 
 function Dashboard() {
   const user = useStore((s) => s.user);
+  const loading = useStore((s) => s.loading);
   const state = useStore((s) => s);
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("overview");
 
   useEffect(() => {
-    // Redirect after hydration if no user
-    if (typeof window !== "undefined") {
-      const t = setTimeout(() => {
-        if (!store.get().user) navigate({ to: "/auth" });
-      }, 50);
-      return () => clearTimeout(t);
-    }
-  }, [navigate]);
+    if (!loading && !user) navigate({ to: "/auth" });
+  }, [loading, user, navigate]);
 
-  if (!user) {
+  if (loading || !user) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <div className="text-sm text-muted-foreground">Loading…</div>
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-soft">
