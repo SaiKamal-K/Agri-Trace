@@ -17,27 +17,23 @@ type Tab = "overview" | "products" | "batches" | "labels" | "reports" | "records
 
 function Dashboard() {
   const user = useStore((s) => s.user);
+  const loading = useStore((s) => s.loading);
   const state = useStore((s) => s);
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("overview");
 
   useEffect(() => {
-    // Redirect after hydration if no user
-    if (typeof window !== "undefined") {
-      const t = setTimeout(() => {
-        if (!store.get().user) navigate({ to: "/auth" });
-      }, 50);
-      return () => clearTimeout(t);
-    }
-  }, [navigate]);
+    if (!loading && !user) navigate({ to: "/auth" });
+  }, [loading, user, navigate]);
 
-  if (!user) {
+  if (loading || !user) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <div className="text-sm text-muted-foreground">Loading…</div>
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-soft">
@@ -187,7 +183,7 @@ function UploadCard() {
 
   const onSave = () => {
     if (!name.trim() || !preview) return;
-    store.addProduct({ name: name.trim(), category, image: preview });
+    void store.addProduct({ name: name.trim(), category, image: preview }).catch((e) => alert(e.message));
     setPreview(null); setName(""); setCategory("Produce");
   };
 
@@ -303,7 +299,7 @@ function BatchesPanel() {
 
   const onCreate = () => {
     if (!productId || !quantity.trim()) return;
-    store.addBatch({ productId, harvestDate, quantity: quantity.trim() });
+    void store.addBatch({ productId, harvestDate, quantity: quantity.trim() }).catch((e) => alert(e.message));
     setQuantity("");
   };
 
@@ -375,7 +371,7 @@ function LabelsPanel() {
       `Issued: ${new Date().toLocaleString()}`,
     ]);
     downloadPdf(`label-${b.code}.pdf`, pdf);
-    store.addLabel({ productId, batchId });
+    void store.addLabel({ productId, batchId }).catch((e) => alert(e.message));
   };
 
   return (
@@ -451,7 +447,7 @@ function ReportsPanel() {
       "This report tracks the journey from field to consumer.",
     ]);
     downloadPdf(`traceability-${b.code}.pdf`, pdf);
-    store.addReport({ batchId });
+    void store.addReport({ batchId }).catch((e) => alert(e.message));
   };
 
   return (
@@ -506,7 +502,7 @@ function RecordsPanel() {
 
   const onAdd = () => {
     if (!name.trim()) return;
-    store.addRecord({ type, name: name.trim(), date, notes: notes.trim() });
+    void store.addRecord({ type, name: name.trim(), date, notes: notes.trim() }).catch((e) => alert(e.message));
     setName(""); setNotes("");
   };
 

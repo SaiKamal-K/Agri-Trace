@@ -30,23 +30,31 @@ function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">(search.mode ?? "login");
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     const fd = new FormData(e.currentTarget);
     const data = Object.fromEntries(fd.entries());
+    setLoading(true);
     try {
       if (mode === "signup") {
         const v = signupSchema.parse(data);
-        store.signup({ fullName: v.fullName, email: v.email, farmName: v.farmName, location: v.location });
+        await store.signup(v);
+        // Try immediate sign-in (works if email confirmation is disabled).
+        try { await store.login(v.email, v.password); navigate({ to: "/dashboard" }); }
+        catch { setError("Account created. Please check your inbox to confirm your email, then sign in."); setMode("login"); }
       } else {
         const v = loginSchema.parse(data);
-        store.login(v.email);
+        await store.login(v.email, v.password);
+        navigate({ to: "/dashboard" });
       }
-      navigate({ to: "/dashboard" });
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof z.ZodError) setError(err.errors[0].message);
+      else setError(err?.message ?? "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,6 +87,7 @@ function AuthPage() {
             {(["login", "signup"] as const).map((m) => (
               <button
                 key={m}
+                type="button"
                 onClick={() => setMode(m)}
                 className={`rounded-full px-3 py-2 text-sm font-medium transition ${mode === m ? "bg-background shadow-soft" : "text-muted-foreground"}`}
               >
@@ -88,9 +97,7 @@ function AuthPage() {
           </div>
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
-            {mode === "signup" && (
-              <Field name="fullName" label="Full name" placeholder="Marta Rodriguez" />
-            )}
+            {mode === "signup" && <Field name="fullName" label="Full name" placeholder="Marta Rodriguez" />}
             <Field name="email" label="Email" type="email" placeholder="you@farm.com" />
             <Field name="password" label="Password" type="password" placeholder="••••••••" />
             {mode === "signup" && (
@@ -102,8 +109,8 @@ function AuthPage() {
 
             {error && <div className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
 
-            <button className="w-full rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-elegant transition hover:opacity-90">
-              {mode === "signup" ? "Create account" : "Sign in"}
+            <button disabled={loading} className="w-full rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-elegant transition hover:opacity-90 disabled:opacity-60">
+              {loading ? "Please wait…" : mode === "signup" ? "Create account" : "Sign in"}
             </button>
           </form>
 
