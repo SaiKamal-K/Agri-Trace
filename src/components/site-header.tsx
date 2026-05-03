@@ -1,7 +1,8 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Leaf, Moon, Sun, LogOut } from "lucide-react";
+import { Moon, Sun, LogOut } from "lucide-react";
 import { useTheme } from "./theme-provider";
 import { store, useStore } from "@/lib/store";
+import logo from "@/assets/agritrace-logo.jpg";
 
 export function SiteHeader() {
   const { theme, toggle } = useTheme();
@@ -13,10 +14,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-primary shadow-glow">
-            <Leaf className="h-5 w-5 text-primary-foreground" />
-          </span>
+        <Link to="/" className="flex items-center gap-2.5">
+          <img src={logo} alt="AgriTrace" className="h-9 w-9 rounded-xl object-cover" />
           <span className="font-display text-xl font-semibold tracking-tight">AgriTrace</span>
         </Link>
 
