@@ -6,7 +6,9 @@ import { store } from "@/lib/store";
 import { z } from "zod";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({ mode: (s.mode === "signup" ? "signup" : "login") as "signup" | "login" }),
+  validateSearch: (s: Record<string, unknown>): { mode?: "login" | "signup" } => ({
+    mode: s.mode === "signup" ? "signup" : s.mode === "login" ? "login" : undefined,
+  }),
   component: AuthPage,
   head: () => ({ meta: [{ title: "Sign in — AgriTrace" }] }),
 });
@@ -25,7 +27,7 @@ const loginSchema = z.object({
 
 function AuthPage() {
   const search = Route.useSearch();
-  const [mode, setMode] = useState<"login" | "signup">(search.mode);
+  const [mode, setMode] = useState<"login" | "signup">(search.mode ?? "login");
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
