@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Camera, FileCheck2, Leaf, ScanLine, Sparkles, Tag, Workflow, ShieldCheck, Check } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import heroImg from "@/assets/hero-farm.jpg";
+import heroImg from "@/assets/hero-farm.png";
 
 export const Route = createFileRoute("/")({
   component: Landing,
