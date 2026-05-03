@@ -44,7 +44,7 @@ export function SiteHeader() {
                 </Link>
               )}
               <button
-                onClick={() => { store.logout(); navigate({ to: "/" }); }}
+                onClick={async () => { await store.logout(); navigate({ to: "/" }); }}
                 className="hidden rounded-full border border-border/60 px-3 py-2 text-sm text-muted-foreground hover:text-foreground md:inline-flex"
               >
                 <LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out
