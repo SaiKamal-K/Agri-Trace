@@ -1,4 +1,4 @@
-import { Leaf } from "lucide-react";
+import logo from "@/assets/agritrace-logo.jpg";
 
 export function SiteFooter() {
   return (
@@ -6,9 +6,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-8 px-6 py-12 md:grid-cols-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-primary">
-              <Leaf className="h-4 w-4 text-primary-foreground" />
-            </span>
+            <img src={logo} alt="AgriTrace" className="h-8 w-8 rounded-lg object-cover" />
             <span className="font-display text-lg font-semibold">AgriTrace</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">From farm to label — compliant in minutes.</p>
