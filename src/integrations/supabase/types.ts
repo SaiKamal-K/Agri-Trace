@@ -14,44 +14,204 @@ export type Database = {
   }
   public: {
     Tables: {
-      Agri: {
+      batches: {
         Row: {
-          email_id: string
-          password: string
+          code: string
+          created_at: string
+          harvest_date: string
+          id: string
+          product_id: string
+          quantity: string
+          updated_at: string
+          user_id: string
         }
         Insert: {
-          email_id: string
-          password: string
+          code: string
+          created_at?: string
+          harvest_date: string
+          id?: string
+          product_id: string
+          quantity?: string
+          updated_at?: string
+          user_id: string
         }
         Update: {
-          email_id?: string
-          password?: string
+          code?: string
+          created_at?: string
+          harvest_date?: string
+          id?: string
+          product_id?: string
+          quantity?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compliance_records: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          name: string
+          notes: string
+          type: Database["public"]["Enums"]["compliance_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          name: string
+          notes?: string
+          type: Database["public"]["Enums"]["compliance_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          name?: string
+          notes?: string
+          type?: Database["public"]["Enums"]["compliance_type"]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
-      Agri_setup: {
+      labels: {
         Row: {
-          Email: string
-          "Farm name": string | null
-          "Full name": string
-          Location: string | null
-          Password: string | null
+          batch_id: string
+          created_at: string
+          id: string
+          product_id: string
+          user_id: string
         }
         Insert: {
-          Email: string
-          "Farm name"?: string | null
-          "Full name": string
-          Location?: string | null
-          Password?: string | null
+          batch_id: string
+          created_at?: string
+          id?: string
+          product_id: string
+          user_id: string
         }
         Update: {
-          Email?: string
-          "Farm name"?: string | null
-          "Full name"?: string
-          Location?: string | null
-          Password?: string | null
+          batch_id?: string
+          created_at?: string
+          id?: string
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "labels_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "labels_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          farm_name: string
+          full_name: string
+          id: string
+          location: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          farm_name?: string
+          full_name?: string
+          id: string
+          location?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          farm_name?: string
+          full_name?: string
+          id?: string
+          location?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          batch_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          batch_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          batch_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -61,7 +221,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      compliance_type: "fertilizer" | "pesticide" | "activity"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -188,6 +348,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      compliance_type: ["fertilizer", "pesticide", "activity"],
+    },
   },
 } as const
