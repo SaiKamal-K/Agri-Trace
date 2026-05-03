@@ -1,7 +1,3 @@
-Here’s a **clean, interactive README.md** you can directly paste into your GitHub repo 👇
-
----
-
 # 🌱 AgriTrace
 
 **From farm to label — compliant in minutes**
@@ -177,8 +173,3 @@ If you're working in AgriTech or SaaS, let’s connect.
 ## ⭐ Support
 
 If you like this project, give it a ⭐ on GitHub — it helps!
-
----
-
-If you want next:
-👉 I can generate a **professional GitHub repo description + tags + portfolio-ready case study**
